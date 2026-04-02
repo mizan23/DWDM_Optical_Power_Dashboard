@@ -129,30 +129,6 @@ Example:
 
 ## ⚠️ Important Notes
 
-### Remove Nested Git Repo
-
-If present, delete:
-
-``` bash
-rm -rf OA-dashboard/.git
-```
-
-------------------------------------------------------------------------
-
-### Line Ending Warning (Windows)
-
-If you see:
-
-    CRLF will be replaced by LF
-
-This is normal. Optional fix:
-
-Create `.gitattributes`:
-
-    * text=auto eol=lf
-
-------------------------------------------------------------------------
-
 ## 📊 Future Enhancements
 
 -   🔗 Integrate with Huawei NCE APIs
