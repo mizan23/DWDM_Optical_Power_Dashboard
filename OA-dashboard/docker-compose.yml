@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  oa-dashboard:
+    build: .
+    container_name: oa-dashboard
+    ports:
+      - "8080:5000"
+    restart: always

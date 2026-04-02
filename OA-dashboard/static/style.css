@@ -1,0 +1,104 @@
+body {
+    font-family: Arial;
+    background: #1e1e2f;
+    color: white;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.card {
+    background: #2b2b3c;
+    padding: 20px;
+    border-radius: 10px;
+    width: 250px;
+}
+
+input {
+    display: block;
+    margin: 10px auto;
+    padding: 8px;
+    width: 90%;
+}
+
+button {
+    padding: 10px;
+    background: cyan;
+    border: none;
+    cursor: pointer;
+}
+
+h2 {
+    color: cyan;
+}
+
+.topology-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+}
+
+.node {
+    fill: #444;
+}
+
+.oa {
+    fill: orange;
+}
+
+.fiber {
+    fill: #2b7cff;
+}
+
+.line {
+    stroke: white;
+    stroke-width: 2;
+}
+
+text {
+    fill: white;
+    font-size: 14px;
+}
+
+.power {
+    fill: yellow;
+    font-size: 13px;
+}
+
+/* Dashboard */
+body {
+    background: #1e1e2f;
+    color: white;
+    text-align: center;
+    font-family: Arial;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.card {
+    background: #2b2b3c;
+    padding: 20px;
+    border-radius: 10px;
+    width: 250px;
+}
+
+input {
+    margin: 5px;
+    padding: 8px;
+    width: 90%;
+}
+
+button {
+    padding: 10px;
+    background: cyan;
+    border: none;
+    cursor: pointer;
+}

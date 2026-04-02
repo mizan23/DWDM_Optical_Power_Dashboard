@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  dwdm-dashboard:
+    build: .
+    container_name: dwdm-dashboard
+    ports:
+      - "8090:8090"
+    restart: always

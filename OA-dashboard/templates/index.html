@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OA Power Dashboard</title>
+
+    <style>
+    body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #020617, #020617 60%, #0b1220);
+        color: #e5e7eb;
+    }
+
+    /* HEADER */
+    h1 {
+        text-align: center;
+        padding: 20px;
+        color: #38bdf8;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    /* LAYOUT */
+    .layout {
+        display: grid;
+        grid-template-columns: 1fr 420px;
+        gap: 15px;   /* reduced gap */
+        padding: 20px;
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    .explanation {
+        border: 1px solid #1e293b;
+        padding: 15px;
+        background: #020617;
+    }
+
+    .section {
+        margin-bottom: 30px;
+    }
+
+    .title {
+        color: #38bdf8;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .formula {
+        background: #020617;
+        padding: 12px;
+        border-radius: 8px;
+        font-family: monospace;
+        color: #22c55e;
+        margin: 10px 0;
+        border-left: 3px solid #22c55e;
+    }
+
+    .param {
+        margin: 6px 0;
+    }
+
+    .param b {
+        color: #facc15;
+    }
+
+    .intuition {
+        margin-top: 10px;
+        color: #94a3b8;
+    }
+
+    /* RIGHT PANEL */
+    .calculator {
+        width: 420px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+
+    /* CARD */
+    .card {
+        background: linear-gradient(180deg, #020617, #020617 60%, #030a18);
+        border: 1px solid rgba(56,189,248,0.15);
+        border-radius: 12px;
+        margin-bottom: 14px;
+        overflow: hidden;
+        transition: 0.25s;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 12px;
+        pointer-events: none;
+    }
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 35px rgba(56,189,248,0.12);
+    }
+
+    
+
+    .card input {
+        width: 100%;
+        padding: 10px 12px;
+        border: none;
+        border-bottom: 1px solid #1e293b;
+        background: transparent;
+        color: #e5e7eb;
+        font-size: 13px;
+        transition: 0.2s;
+    }
+
+    .card input::placeholder {
+        color: #64748b;
+    }
+
+    .card input:focus {
+        outline: none;
+        border-bottom: 1px solid #38bdf8;
+        background: rgba(56,189,248,0.03);
+    }
+
+    button {
+        padding: 7px 18px;
+        margin: 8px auto 6px auto;
+        border-radius: 20px;
+        font-size: 12px;
+        background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+        color: #020617;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: 0.25s;
+    }
+
+    button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 12px rgba(56,189,248,0.5);
+    }
+
+    .card h3 {
+        margin: 0;
+        padding: 12px 14px;
+        font-size: 14px;
+        font-weight: 600;
+        background: linear-gradient(90deg, #0f172a, #020617);
+        border-bottom: 1px solid rgba(56,189,248,0.15);
+        color: #38bdf8;
+    }
+
+    /* INPUT GROUP */
+    .input-group {
+        margin-bottom: 12px;
+    }
+
+    .input-group label {
+        display: block;
+        font-size: 12px;
+        color: #94a3b8;
+        margin-bottom: 4px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #1e293b;
+        background: #020617;
+        color: white;
+        transition: 0.2s;
+    }
+
+    input:focus {
+        border: 1px solid #38bdf8;
+        box-shadow: 0 0 5px rgba(56,189,248,0.4);
+        outline: none;
+    }
+
+    /* BUTTON */
+    button {
+        width: auto;
+        padding: 6px 14px;
+        margin: 6px auto 4px auto;
+        display: block;
+        border: none;
+        border-radius: 6px;
+        background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+        color: #020617;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+    button:hover {
+        opacity: 0.9;
+    }
+
+    /* RESULT */
+    .result {
+        border-top: 1px solid rgba(56,189,248,0.1);
+        padding: 8px;
+        font-size: 14px;
+        text-align: center;
+        color: #22c55e;
+        background: rgba(34,197,94,0.05);
+    }
+
+    .sub-result {
+        font-size: 11px;
+        text-align: center;
+        color: #94a3b8;
+        padding-bottom: 8px;
+    }
+
+    /* IMAGE */
+    .top-left-image {
+        width: 100%;
+        max-width: 600px;
+        display: block;
+        margin: 0 auto 20px auto;
+        border-radius: 10px;
+    }
+
+    .note-box {
+    background: #020617;
+    border: 1px solid #1e293b;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    }
+
+    .note-title {
+        color: #38bdf8;
+        font-size: 13px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #1e293b;
+        padding-bottom: 5px;
+    }
+
+    .note-item {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .note-item b {
+        color: #facc15;
+    }
+
+    .note-desc {
+        color: #94a3b8;
+        font-size: 12px;
+        margin-left: 5px;
+    }
+
+    .note-extra {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #22c55e;
+    }
+
+    .note-box {
+    background: #020617;
+    border: 1px solid #1e293b;
+    padding: 14px;
+    margin-top: 10px;
+    border-radius: 8px;
+    }
+
+    .note-title {
+        color: #38bdf8;
+        font-size: 14px;
+        margin-bottom: 12px;
+        font-weight: 600;
+        border-bottom: 1px solid #1e293b;
+        padding-bottom: 6px;
+    }
+
+    /* EACH LINE */
+    .note-item {
+        font-size: 13px;
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+
+    /* KEY LABEL */
+    .note-item b {
+        color: #facc15;
+        font-weight: 600;
+    }
+
+    /* DESCRIPTION */
+    .note-desc {
+        color: #cbd5f5;   /* brighter than before */
+        font-size: 12px;
+        margin-top: 2px;
+    }
+
+    /* EXTRA LINE */
+    .note-extra {
+        margin-top: 12px;
+        font-size: 12px;
+        color: #22c55e;
+        font-weight: 500;
+    }
+
+    .circle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #0ea5e9;
+        color: #020617;
+        font-size: 11px;
+        font-weight: bold;
+        margin-right: 6px;
+    }
+
+
+
+    </style>
+
+</head>
+
+<body>
+
+<h1>📡 Optical Amplifier Power Dashboard</h1>
+
+<div class="layout">
+
+    <!-- ================= EXPLANATION ================= -->
+    <div class="explanation">
+        <img src="{{ url_for('static', filename='amplifier.png') }}" class="top-left-image">
+
+
+        <div class="note-box">
+
+            <div class="note-title">📘 Amplifier Roles & Directions</div>
+
+            <div class="note-item">
+                <span class="circle">1</span>
+                <b>Transmit-end OA (Add Direction)</b><br>
+                <span class="note-desc">
+                    Booster amplifier at the transmit side.
+                </span>
+            </div>
+
+            <div class="note-item">
+                <span class="circle">2</span>
+                <b>Downstream OA (Drop Direction)</b><br>
+                <span class="note-desc">
+                    Located at the receiving end (Pre-amplifier).
+                </span>
+            </div>
+
+            <div class="note-item">
+                <span class="circle">3</span>
+                <span class="circle">4</span>
+                <b>Second OA (Pass-through Direction)</b><br>
+                <span class="note-desc">
+                    Cascaded amplifiers where output of one feeds another.
+                </span>
+            </div>
+
+            <div class="note-extra">
+                💡 Used to compensate fiber loss and meet sensitivity requirements.
+            </div>
+
+        </div>
+
+        <div class="section">
+            <div class="title">🔹 1. Transmit-end OA Input Power</div>
+
+            <div class="formula">
+                P(total) = P(single) + 10 log₁₀(N)
+            </div>
+
+            <div class="param"><b>P(total)</b> → Total combined optical power (dBm)</div>
+            <div class="param">This is what goes into the amplifier after combining multiple channels.</div>
+
+            <div class="param"><b>P(single)</b> → Power of a single optical channel (dBm)</div>
+            <div class="param">Example: one wavelength or one signal.</div>
+
+            <div class="param"><b>N</b> → Number of channels/signals being combined</div>
+            <div class="param">More channels = higher total power.</div>
+
+            <div class="intuition">
+                💡 If you combine multiple signals, power increases logarithmically—not linearly.
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="title">🔹 2. Downstream OA Input Power</div>
+
+            <div class="formula">
+                P(in) = P(pre-out) − (P(pre-single-out) − P(single-in))
+            </div>
+
+            <div class="param"><b>P(in)</b> → Input power to the downstream amplifier</div>
+            <div class="param"><b>P(pre-out)</b> → Total output power from previous stage</div>
+            <div class="param"><b>P(pre-single-out)</b> → Single-channel output</div>
+            <div class="param"><b>P(single-in)</b> → Expected input per channel</div>
+
+            <div class="intuition">
+                💡 Adjusts total power based on channel-level differences.
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="title">🔹 3. Second OA Input Power</div>
+
+            <div class="formula">
+                P(second-in) = P(first-out) − (P(first-single-out) − P(second-single-in)) + Offset
+            </div>
+
+            <div class="param"><b>Offset</b> → Fiber loss / connectors / margin</div>
+
+            <div class="intuition">
+                💡 Applies real-world corrections and losses.
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="title">🔹 4. Mixed Lambda (100G + Beyond)</div>
+
+            <div class="formula">
+                Convert → Sum → Convert Back
+            </div>
+
+            <div class="param">dBm cannot be added directly.</div>
+            <div class="param">Convert to mW → sum → convert back.</div>
+
+            <div class="intuition">
+                💡 This is how real optical planning tools calculate total power.
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ================= CALCULATOR ================= -->
+    <div class="calculator">
+
+        <!-- MIXED -->
+        <div class="card">
+            <h3>Mixed Lambda Power</h3>
+
+            <input id="p1_100g" placeholder="100G Single Power (e.g. 1.7)">
+            <input id="n_100g" placeholder="100G Channels">
+
+            <input id="p1_beyond" placeholder="Beyond Single Power (e.g. 4.7)">
+            <input id="n_beyond" placeholder="Beyond Channels">
+
+            <input id="p1_c" placeholder="Beyond 400G Power (e.g. 7.0)">
+            <input id="n_c" placeholder="Beyond 400G Channels">
+
+            <button onclick="calcMixed()">Calculate</button>
+
+            <div class="result" id="mixed_total"></div>
+            <div class="sub-result" id="mixed_breakdown"></div>
+        </div>
+
+        <!-- TRANSMIT -->
+        <div class="card">
+            <h3>Transmit OA</h3>
+            <div class="input-group">
+                <label>Single Channel Power (dBm)</label>
+                <input id="p_single" placeholder="-10">
+            </div>
+
+            <div class="input-group">
+                <label>Channels</label>
+                <input id="n" placeholder="8">
+            </div>
+            
+            <button onclick="calcTransmit()">Calculate</button>
+            <div class="result" id="transmit_result"></div>
+        </div>
+
+        <!-- DOWNSTREAM -->
+        <div class="card">
+            <h3>Downstream OA</h3>
+            <input id="p_pre" placeholder="Previous Output">
+            <input id="p_pre_single" placeholder="Previous Single">
+            <input id="p_single_in" placeholder="Single Input">
+            <button onclick="calcDownstream()">Calculate</button>
+            <div class="result" id="down_result"></div>
+        </div>
+
+        <!-- SECOND -->
+        <div class="card">
+            <h3>Second OA</h3>
+            <input id="p_first" placeholder="First Output">
+            <input id="p_first_single" placeholder="First Single">
+            <input id="p_second_single" placeholder="Second Single">
+            <input id="offset" placeholder="Offset">
+            <button onclick="calcSecond()">Calculate</button>
+            <div class="result" id="second_result"></div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+// MIXED
+// MIXED
+async function calcMixed() {
+    const res = await fetch('/calculate/mixed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            p1_a: parseFloat(document.getElementById('p1_100g').value),
+            n_a: parseInt(document.getElementById('n_100g').value),
+
+            p1_b: parseFloat(document.getElementById('p1_beyond').value),
+            n_b: parseInt(document.getElementById('n_beyond').value),
+
+            p1_c: parseFloat(document.getElementById('p1_c').value),
+            n_c: parseInt(document.getElementById('n_c').value)
+        })
+    });
+
+    const data = await res.json();
+
+    document.getElementById('mixed_total').innerText =
+        "P(total) = " + (data.total ?? "--") + " dBm";
+
+    document.getElementById('mixed_breakdown').innerText =
+        "P(100G) = " + (data.p_a ?? "--") +
+        " dBm | P(beyond) = " + (data.p_b ?? "--") +
+        " dBm | P(3rd) = " + (data.p_c ?? "--") + " dBm";
+
+    document.getElementById('p_pre').value = data.total;
+}
+
+
+// TRANSMIT
+async function calcTransmit() {
+    const res = await fetch('/calculate/transmit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            p_single: parseFloat(document.getElementById('p_single').value),
+            n: parseInt(document.getElementById('n').value)
+        })
+    });
+
+    const data = await res.json();
+    document.getElementById('transmit_result').innerText = 
+    "P(total) = " + data.result + " dBm";
+}
+
+
+// DOWNSTREAM
+async function calcDownstream() {
+    const res = await fetch('/calculate/downstream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            p_pre: parseFloat(document.getElementById('p_pre').value),
+            p_pre_single: parseFloat(document.getElementById('p_pre_single').value),
+            p_single_in: parseFloat(document.getElementById('p_single_in').value)
+        })
+    });
+
+    const data = await res.json();
+    document.getElementById('down_result').innerText = 
+    "P(in) = " + data.result + " dBm";
+}
+
+
+// SECOND
+async function calcSecond() {
+    const res = await fetch('/calculate/second', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            p_first: parseFloat(document.getElementById('p_first').value),
+            p_first_single: parseFloat(document.getElementById('p_first_single').value),
+            p_second_single: parseFloat(document.getElementById('p_second_single').value),
+            offset: parseFloat(document.getElementById('offset').value)
+        })
+    });
+
+    const data = await res.json();
+    document.getElementById('second_result').innerText = 
+    "P(second-in) = " + data.result + " dBm";
+}
+
+</script>
+
+</body>
+</html>

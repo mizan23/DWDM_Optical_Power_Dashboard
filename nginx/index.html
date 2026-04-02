@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DWDM Optical Power Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        h1 {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #cbd5f5;
+            margin-bottom: 50px;
+        }
+
+        .cards {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 280px;
+            transition: 0.3s;
+            text-decoration: none;
+            color: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .desc {
+            font-size: 14px;
+            color: #cbd5f5;
+        }
+
+        .dwdm {
+            border: 2px solid #3b82f6;
+        }
+
+        .oa {
+            border: 2px solid #22c55e;
+        }
+
+        footer {
+            margin-top: 80px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>⚡ DWDM Optical Power Dashboard</h1>
+    <p>Centralized Dashboard for Optical Network Tools</p>
+
+    <div class="cards">
+
+        <a href="/dwdm/" class="card dwdm">
+            <div class="icon">📡</div>
+            <div class="title">Optical Amplifier Gain Calculator</div>
+            <div class="desc">
+                Optical gain calculation, amplifier analysis, and DWDM planning tools.
+            </div>
+        </a>
+
+        <a href="/oa/" class="card oa">
+            <div class="icon">⚙️</div>
+            <div class="title">Optical Amplifier Power Calculator</div>
+            <div class="desc">
+                Power calculations, transmission analysis, and optical amplifier tools.
+            </div>
+        </a>
+
+    </div>
+
+    <footer>
+        © 2026 Network Engineering Toolkit | Built by Mizan
+    </footer>
+</div>
+
+</body>
+</html>

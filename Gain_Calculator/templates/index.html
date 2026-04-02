@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DWDM Dashboard</title>
+
+<style>
+body {
+    font-family: "Segoe UI", Arial;
+    background: #0b1220;
+    color: #d1d5db;
+    margin: 0;
+    padding: 20px;
+    font-size: 14px;
+}
+
+h1 {
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 30px;
+    color: #e5e7eb;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* CARD */
+.card {
+    background: #111827;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 18px;
+    border: 1px solid #1f2937;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* INPUT */
+input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #1f2937;
+    background: #0b1220;
+    color: #e5e7eb;
+    margin-top: 5px;
+    margin-bottom: 12px;
+}
+
+/* BUTTON */
+button {
+    background: #2563eb;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+
+/* LABEL */
+label {
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+/* SECTION TITLE */
+.section-title {
+    font-size: 14px;
+    color: #9ca3af;
+    margin-bottom: 10px;
+}
+
+/* KPI */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 12px;
+}
+
+.kpi {
+    background: #0b1220;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid #1f2937;
+}
+
+.kpi-value {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.kpi-label {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* STATUS */
+.badge {
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.ok { color: #22c55e; }
+.warn { color: #f59e0b; }
+.bad { color: #ef4444; }
+
+/* ROW */
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+/* GRAPH */
+.bars {
+    display: flex;
+    align-items: flex-end;
+    height: 140px;
+    gap: 6px;
+}
+
+.bar {
+    flex: 1;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 11px;
+    color: white;
+    padding: 3px;
+}
+
+hr {
+    border: 0.5px solid #1f2937;
+    margin: 15px 0;
+}
+</style>
+</head>
+
+<body>
+
+<h1>DWDM Amplifier Dashboard</h1>
+
+<div class="container">
+
+<!-- INPUT -->
+<div class="card">
+<div class="grid">
+
+<div>
+<label>TX Module</label>
+<input id="tx_module" value="106">
+
+<label>Input (dBm)</label>
+<input id="pin">
+
+<label>Output (dBm)</label>
+<input id="pout">
+</div>
+
+<div>
+<label>RX Module</label>
+<input id="rx_module" value="101">
+
+<label>Span Loss (dB)</label>
+<input id="span_loss" value="21">
+</div>
+
+</div>
+
+<button onclick="calculate()">Calculate</button>
+</div>
+
+<!-- RESULT -->
+<div class="card" id="result" style="display:none;">
+
+<div class="section-title">Overview</div>
+
+<div class="kpi-grid">
+<div class="kpi">
+<div class="kpi-value" id="tx_gain"></div>
+<div class="kpi-label">TX Gain</div>
+</div>
+
+<div class="kpi">
+<div class="kpi-value" id="rx_gain"></div>
+<div class="kpi-label">RX Gain</div>
+</div>
+
+<div class="kpi">
+<div class="kpi-value" id="tilt"></div>
+<div class="kpi-label">Tilt</div>
+</div>
+
+<div class="kpi">
+<div id="tx_status" class="badge"></div>
+<div class="kpi-label">TX Status</div>
+</div>
+</div>
+
+<hr>
+
+<div class="grid">
+
+<div>
+<div class="section-title">TX Amplifier</div>
+<div class="row"><span>Module</span><span id="tx_module_out"></span></div>
+<div class="row"><span>Total Input</span><span id="pin_total"></span></div>
+<div class="row"><span>Total Output</span><span id="pout_total"></span></div>
+<div class="row"><span>Profile</span><span id="tx_profile"></span></div>
+<div class="row"><span>Gain Diff</span><span id="tx_gain_diff"></span></div>
+</div>
+
+<div>
+<div class="section-title">RX Amplifier</div>
+<div class="row"><span>Module</span><span id="rx_module_out"></span></div>
+<div class="row"><span>RX Input</span><span id="rx_in"></span></div>
+<div class="row"><span>Profile</span><span id="rx_profile"></span></div>
+<div class="row"><span>Gain Diff</span><span id="rx_gain_diff"></span></div>
+<div class="row"><span>Status</span><span id="rx_status"></span></div>
+</div>
+
+</div>
+
+<hr>
+
+<div class="section-title">Channel Power</div>
+<div class="bars" id="bars"></div>
+
+</div>
+
+</div>
+
+<script>
+function statusClass(s){
+if(s==="OK") return "ok";
+if(s==="MODERATE") return "warn";
+return "bad";
+}
+
+function calculate(){
+
+let pin = document.getElementById("pin").value.split(" ").map(Number);
+let pout = document.getElementById("pout").value.split(" ").map(Number);
+
+fetch("/single_amp",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+module:tx_module.value,
+rx_module:rx_module.value,
+pin:pin,
+pout:pout,
+span_loss:parseFloat(span_loss.value)
+})
+})
+.then(r=>r.json())
+.then(d=>{
+
+result.style.display="block";
+
+tx_gain.innerText=d.tx_gain+" dB";
+rx_gain.innerText=d.rx_gain+" dB";
+tilt.innerText=d.tilt+" dB";
+
+tx_status.innerText=d.tx_status;
+tx_status.className=statusClass(d.tx_status);
+
+tx_module_out.innerText=d.tx_module;
+pin_total.innerText=d.pin_total+" dBm";
+pout_total.innerText=d.pout_total+" dBm";
+tx_profile.innerText=d.tx_profile+" dB";
+tx_gain_diff.innerText=d.tx_gain_diff+" dB";
+
+rx_module_out.innerText=d.rx_module;
+rx_in.innerText=d.p_rx_in+" dBm";
+rx_profile.innerText=d.rx_profile+" dB";
+rx_gain_diff.innerText=d.rx_gain_diff+" dB";
+
+rx_status.innerText=d.rx_status;
+rx_status.className=statusClass(d.rx_status);
+
+bars.innerHTML="";
+let max=Math.max(...pout);
+let min=Math.min(...pout);
+
+pout.forEach((v,i)=>{
+let b=document.createElement("div");
+let h=((v-min)/(max-min+0.1))*140+20;
+
+b.className="bar";
+b.style.height=h+"px";
+
+if(v>=max-0.5) b.style.background="#22c55e";
+else if(v<=min+0.5) b.style.background="#ef4444";
+else b.style.background="#3b82f6";
+
+b.innerHTML=`${v}`;
+bars.appendChild(b);
+});
+
+});
+}
+</script>
+
+</body>
+</html>
